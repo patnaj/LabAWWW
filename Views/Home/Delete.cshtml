@@ -1,0 +1,11 @@
+﻿@model ProductModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="validation" asp-validation-summary="All"></div>
+<form method="post">
+    Na pewno usunać @Model.Title?
+    <input type="hidden" name="ok" value=@($"{true}") >
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
