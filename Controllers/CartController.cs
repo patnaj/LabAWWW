@@ -48,7 +48,8 @@ namespace Lab2.Controllers
                 var product = Db.Products.FirstOrDefault(p => p.Id == id);
                 if (product == null)
                     return NotFound();
-                cart.Products.Add(new CartItemModel() { Product = product });
+                item = new CartItemModel() { Product = product };
+                cart.Products.Add(item);
             }
             item.Amount += amount;
             Db.SaveChanges();

@@ -18,7 +18,6 @@
 </ul>
 }
 
-<form>
 <table class="table">
 <th>
     <td></td><td><input name="q" value="@ViewBag.Q"></td><td></td><td>@Html.ActionLink("Dodaj","Add", new {catid=ViewBag.catid}, new {Class="btn btn-success"})</td>
@@ -26,7 +25,9 @@
 @foreach(var m in Model){
     <tr><td>@m.Id</td><td>@m.Title</td><td>@m.Description</td><td>@m.Catalog?.Title</td><td>
         @Html.ActionLink("Usun","Delete", new {id=m.Id})
+        
+        <button form="AddToCart" value="@m.Id" name="id">Dodaj do koszyka</button>
         </td></tr>
 }
 </table>
-</form>
+<form id="AddToCart" asp-action="Add" asp-controller="Cart" method="post" />
