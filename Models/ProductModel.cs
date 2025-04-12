@@ -7,6 +7,7 @@ namespace Lab2.Models
     {
         [Key]
         public int Id { get; set; }
+        [RegularExpression("^[A-Z][a-z \\-0-9\"]{3,29}$")]
         public string Title { get; set; } = "";
         public string Description { get; set; } = "";
         public int CatlogId { get; set; }

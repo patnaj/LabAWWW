@@ -23,7 +23,10 @@
     <td></td><td><input name="q" value="@ViewBag.Q"></td><td></td><td>@Html.ActionLink("Dodaj","Add", new {catid=ViewBag.catid}, new {Class="btn btn-success"})</td>
 </th>    
 @foreach(var m in Model){
-    <tr><td>@m.Id</td><td>@m.Title</td><td>@m.Description</td><td>@m.Catalog?.Title</td><td>@Html.ActionLink("Usun","Delete", new {id=m.Id})</td></tr>
+    <tr><td>@m.Id</td><td>@m.Title</td><td>@m.Description</td><td>@m.Catalog?.Title</td><td>
+        @Html.ActionLink("Usun","Delete", new {id=m.Id})
+        @Html.ActionLink("Dodaj","Add", "Cart", new {ProductId=m.Id})
+        </td></tr>
 }
 </table>
 </form>
