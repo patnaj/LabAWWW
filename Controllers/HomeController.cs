@@ -59,6 +59,18 @@ public IActionResult IndexCatalog()
         return View(new CatalogModel() {  });
     }
 
+    [HttpPost]
+    public IActionResult AddCatalog(CatalogModel catalog)
+    {
+        if (ModelState.IsValid)
+        {
+            db.Catalogs.Add(catalog);
+            db.SaveChanges();
+            return RedirectToAction("index", new { catid = catalog.Id });
+        }
+        return View(catalog);
+    }
+
 
 
 [HttpGet]

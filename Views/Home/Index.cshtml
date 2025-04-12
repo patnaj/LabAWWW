@@ -9,6 +9,7 @@
 </div>
 
 @if(ViewBag.cats is IList<CatalogModel> catalogi){
+@Html.ActionLink("Dodaj Catalog","AddCatalog", new {}, new {Class="btn btn-success"})
 <ul>
     <dl><a class="@(0 == ViewBag.catid ? "btn btn-success" : "btn btn-primary")" href=@Url.Action("Index", new {q=ViewBag.Q})>All Catalogs</a></dl>
     @foreach(var c in catalogi){
