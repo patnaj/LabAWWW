@@ -52,6 +52,7 @@ namespace Lab2.Controllers
                 cart.Products.Add(item);
             }
             item.Amount += amount;
+            if (item.Amount < 0) item.Amount = 0;
             Db.SaveChanges();
             return Redirect("index");
         }

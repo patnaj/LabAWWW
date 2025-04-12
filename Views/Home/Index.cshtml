@@ -23,8 +23,9 @@
     <td></td><td><input name="q" value="@ViewBag.Q"></td><td></td><td>@Html.ActionLink("Dodaj","Add", new {catid=ViewBag.catid}, new {Class="btn btn-success"})</td>
 </th>    
 @foreach(var m in Model){
-    <tr><td>@m.Id</td><td>@m.Title</td><td>@m.Description</td><td>@m.Catalog?.Title</td><td>
+    <tr><td>@m.Id</td><td>@m.Title</td><td>@m.Description</td><td>@m.Price</td><td>@m.Catalog?.Title</td><td>
         @Html.ActionLink("Usun","Delete", new {id=m.Id})
+        @Html.ActionLink("Edytuj","Add", new {id=m.Id})
         
         <button form="AddToCart" value="@m.Id" name="id">Dodaj do koszyka</button>
         </td></tr>

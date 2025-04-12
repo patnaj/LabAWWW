@@ -36,16 +36,25 @@ public IActionResult IndexCatalog()
 }
 
     [HttpGet]
-    public IActionResult Add(int catid)
+    public IActionResult Add(int catid, int id = 0)
     {
-        return View(new ProductModel() { CatlogId = catid });
+        var prod = db.Products.FirstOrDefault(i=>i.Id==id) ?? new ProductModel() { CatlogId = catid };
+        return View( prod );
     }
     [HttpPost]
     public IActionResult Add(ProductModel prod)
     {
         if (ModelState.IsValid)
         {
-            db.Products.Add(prod);
+            if(prod.Id == 0)
+                db.Products.Add(prod);
+            else{
+                var tmp = db.Products.FirstOrDefault(i=>i.Id==prod.Id);
+                if(tmp != null){
+                tmp.Price = prod.Price;
+                tmp.Title = prod.Title;
+                }
+            }
             db.SaveChanges();
             return RedirectToAction("index", new { catid = prod.CatlogId });
         }
