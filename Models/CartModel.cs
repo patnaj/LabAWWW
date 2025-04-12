@@ -32,6 +32,8 @@ namespace Lab2.Models
         public int Id { get; set; }
         public int ProductId { get; set; }
         public float Amount { get; set; }
+        public float Value { get=>Product!=null?Product.Price * Amount:0;  }
+        
 
         [ForeignKey("ProductId")]
         public virtual ProductModel Product { get; set; }

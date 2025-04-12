@@ -13,13 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductId)
+                @Html.DisplayNameFor(model => model.Product.Title)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Value)
             </th>
             <th></th>
         </tr>
@@ -28,20 +28,31 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Product.Title)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Amount)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.DisplayFor(modelItem => item.Value)
+            </td>
+            <td>
+                @* @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) | *@
+                @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) | *@
+                @* @Html.ActionLink("Delete", "Delete", new {  id=item.Id }) *@
+                <button type="submit" form="addForm" value="@item.Id" name="id">Add</button>
+                <button type="submit" form="removeForm" value="@item.Id" name="id">Remove</button>
+                <button type="submit" form="deleteForm" value="@item.Id" name="id">Delete</button>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<form id="deleteForm" asp-action="Delete"></form>
+<form id="addForm" asp-action="Add" asp-route-amount=1></form>
+<form id="removeForm" asp-action="Add" asp-route-amount=-1></form>
+
+
+@Html.ActionLink("Return", "Index", "Home", new { /* id=item.PrimaryKey */ })
+

@@ -25,7 +25,6 @@
 @foreach(var m in Model){
     <tr><td>@m.Id</td><td>@m.Title</td><td>@m.Description</td><td>@m.Catalog?.Title</td><td>
         @Html.ActionLink("Usun","Delete", new {id=m.Id})
-        @Html.ActionLink("Dodaj","Add", "Cart", new {ProductId=m.Id})
         </td></tr>
 }
 </table>

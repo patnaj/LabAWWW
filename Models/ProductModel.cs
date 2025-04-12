@@ -10,6 +10,7 @@ namespace Lab2.Models
         [RegularExpression("^[A-Z][a-z \\-0-9\"]{3,29}$")]
         public string Title { get; set; } = "";
         public string Description { get; set; } = "";
+        public float Price { get; set; } = 0;
         public int CatlogId { get; set; }
 
         [ForeignKey("CatlogId")]

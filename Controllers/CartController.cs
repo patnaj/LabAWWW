@@ -23,8 +23,9 @@ namespace Lab2.Controllers
             _logger = logger;
 
 
-            cart = db.Carts.Include(a=>a.Products).FirstOrDefault();
-            if(cart == null){
+            cart = db.Carts.Include(a => a.Products).ThenInclude(b => b.Product).FirstOrDefault();
+            if (cart == null)
+            {
                 cart = new Models.CartModel();
                 db.Carts.Add(cart);
             }
@@ -34,20 +35,36 @@ namespace Lab2.Controllers
 
         public IActionResult Index()
         {
-            
+
             return View(cart.Products);
         }
 
-        public IActionResult Add(int ProductId)
+        [HttpPost]
+        public IActionResult Add(int id, int amount = 1)
         {
-            var p = Db.Products.FirstOrDefault(p=>p.Id == ProductId);
-            if(p != null){
-                cart.Products.Add(new CartItemModel(){Amount=1, Product = p});
-                Db.SaveChanges();
+            var item = cart.Products.FirstOrDefault(p => p.ProductId == id);
+            if (item == null)
+            {
+                var product = Db.Products.FirstOrDefault(p => p.Id == id);
+                if (product == null)
+                    return NotFound();
+                cart.Products.Add(new CartItemModel() { Product = product });
             }
+            item.Amount += amount;
+            Db.SaveChanges();
             return Redirect("index");
         }
 
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var product = cart.Products.FirstOrDefault(p => p.Id == id);
+            if (product == null)
+                return NotFound();
+            cart.Products.Remove(product);
+            Db.SaveChanges();
+            return Redirect("index");
+        }
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
