@@ -1,34 +1,87 @@
 ﻿@model IList<ProductModel>
 @{
     ViewData["Title"] = "Home Page";
+    IList<CatalogModel> cat = null;
+    if (ViewBag.cats is IList<CatalogModel> catalogi)
+        cat = catalogi;
+
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+<div class="row">
+    <div class="col-md-2">
+        <div class="list-group list-group-flush">
+            @if (cat != null)
+            {
+                <a class="@(0 != ViewBag.catid ? "list-group-item list-group-item-action" : "list-group-item list-group-item-action active")"
+                    href=@Url.Action("Index", new { q = ViewBag.Q })>All Catalogs</a>
+                @foreach (var c in cat)
+                {
+                    <a class="@(c.Id != ViewBag.catid ? "list-group-item list-group-item-action" : "list-group-item list-group-item-action active")"
+                        href=@Url.Action("Index", new { q = ViewBag.Q, catid = c.Id })>@c.Title</a>
+                }
+            }
+        </div>
+        <div class="d-grid gap-2 pt-3">
+            @Html.ActionLink("Dodaj", "AddCatalog", new { }, new { Class = "btn btn-success " })
+            @Html.ActionLink("Koszyk", "Index", "Cart", new { }, new { Class = "btn btn-secondary " })
+        </div>
+    </div>
+    <div class="col-md-10">
+        <table class="table">
+            <th>
+            <td colspan="4">
+                <div class="input-group">
+                    <input form="query" name="q" value="@ViewBag.Q" class="form-control">
+                    <div class="input-group-append"><button type="submit" form="query"
+                            class="btn btn-secondary">Szukaj</button>
+                    </div>
+                </div>
+            </td>
+            <td>
+                @if (ViewBag.catid != 0)
+                {
+                    @Html.ActionLink("Dodaj", "Add", new { catid = ViewBag.catid }, new { Class = "btn btn-success" })
+                    ;
+                }
+            </td>
+            </th>
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td>@m.Id</td>
+                    <td>@m.Title</td>
+                    <td>@m.Description <br />
+                        @foreach (var t in (m.Tags??"").Split(','))
+                        {
+                            <span class="badge bg-secondary">@t</span>
+                        }
+                    </td>
+                    <td>@m.Price</td>
+                    <td>@m.Catalog?.Title</td>
+                    <td>
+                        @Html.ActionLink("Usun", "Delete", new { id = m.Id }, new { Class = "btn btn-danger" })
+                        @Html.ActionLink("Edytuj", "Add", new { id = m.Id }, new { Class = "btn btn-secondary" })
 
-@if(ViewBag.cats is IList<CatalogModel> catalogi){
-@Html.ActionLink("Dodaj Catalog","AddCatalog", new {}, new {Class="btn btn-success"})
-<ul>
-    <dl><a class="@(0 == ViewBag.catid ? "btn btn-success" : "btn btn-primary")" href=@Url.Action("Index", new {q=ViewBag.Q})>All Catalogs</a></dl>
-    @foreach(var c in catalogi){
-        <dl><a class="@(c.Id == ViewBag.catid ? "btn btn-success" : "btn btn-primary")" href=@Url.Action("Index", new {q=ViewBag.Q, catid=c.Id})>@c.Title</a></dl>
-    }
-</ul>
-}
-
-<table class="table">
-<th>
-    <td></td><td><input name="q" value="@ViewBag.Q"></td><td></td><td>@Html.ActionLink("Dodaj","Add", new {catid=ViewBag.catid}, new {Class="btn btn-success"})</td>
-</th>    
-@foreach(var m in Model){
-    <tr><td>@m.Id</td><td>@m.Title</td><td>@m.Description</td><td>@m.Price</td><td>@m.Catalog?.Title</td><td>
-        @Html.ActionLink("Usun","Delete", new {id=m.Id})
-        @Html.ActionLink("Edytuj","Add", new {id=m.Id})
-        
-        <button form="AddToCart" value="@m.Id" name="id">Dodaj do koszyka</button>
-        </td></tr>
-}
-</table>
-<form id="AddToCart" asp-action="Add" asp-controller="Cart" method="post" />
+                        <button form="AddToCart" value="@m.Id" name="id" class="btn btn-success">Dodaj do
+                            koszyka</button>
+                    </td>
+                </tr>
+            }
+        </table>
+        <form id="query" asp-action="Index" asp-controller="Home" asp-route-catid="@ViewBag.catid" method="post" />
+        <form id="AddToCart" asp-action="Add" asp-controller="Cart" method="post" />
+        <div class="col-12">
+            @if (ViewBag.Tags is List<TagModel> tags)
+            {
+                @foreach (var t in tags)
+                {
+                    <a class="btn btn-primary btn-sm" href=@Url.Action("Index", new { q = t.Title })>@t.Title</a>
+                }
+            }
+        </div>
+    </div>
+</div>

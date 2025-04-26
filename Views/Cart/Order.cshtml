@@ -1,0 +1,51 @@
+@model Lab2.Models.CartModel
+
+@{
+    ViewData["Title"] = "Order";
+}
+
+<h1>Order</h1>
+
+<div>
+    <h4>CartModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Streat)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Streat)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.HomeNo)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.HomeNo)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ZipCode)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ZipCode)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PhoneNo)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PhoneNo)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+    </dl>
+</div>
+<div>
+    <form method="post">
+        <input type="hidden" name="ok" value="true" />
+        <button class="btn btn-success" type="submit">Zamawiam</button>
+    </form>
+    <a asp-action="Index">Back to List</a>
+</div>

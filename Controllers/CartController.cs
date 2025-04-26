@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,8 +36,42 @@ namespace Lab2.Controllers
 
         public IActionResult Index()
         {
-
             return View(cart.Products);
+        }
+
+        [HttpGet]
+        public IActionResult Address()
+        {
+            return View(cart);
+        }
+
+        [HttpPost]
+        public IActionResult Address(CartModel cart)
+        {
+            if (ModelState.IsValid)
+            {
+
+                foreach (var p in this.cart.GetType().GetProperties())
+                {
+                    if (p.GetAccessors().FirstOrDefault()?.IsVirtual == false && !Attribute.IsDefined(p, typeof(KeyAttribute)))
+                        p.SetValue(this.cart, p.GetValue(cart));
+                }
+                return RedirectToAction("Index", "Home");
+            }
+            return View(cart);
+        }
+
+        [HttpGet]
+        public IActionResult Order(CartModel cart)
+        {
+            return View(cart);
+        }
+
+        [HttpPost]
+        public IActionResult Order(bool ok)
+        {
+            Db.Carts.Remove(this.cart);
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]

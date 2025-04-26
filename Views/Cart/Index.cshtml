@@ -4,55 +4,84 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Koszyk</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Product.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Value)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Product.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Value)
-            </td>
-            <td>
-                @* @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) | *@
-                @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) | *@
-                @* @Html.ActionLink("Delete", "Delete", new {  id=item.Id }) *@
-                <button type="submit" form="addForm" value="@item.ProductId" name="id">Add</button>
-                <button type="submit" form="removeForm" value="@item.ProductId" name="id">Remove</button>
-                <button type="submit" form="deleteForm" value="@item.Id" name="id">Delete</button>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+@* <p> *@
+@* <a asp-action="Create">Create New</a> *@
+@* </p> *@
+<div class="row">
+    <div class="col-md-2">
+        <div class="d-grid gap-2 pt-3">
+            @Html.ActionLink("Zamów", "Order", new { }, new { Class = "btn btn-success " })
+            @Html.ActionLink("Powrót", "Index", "Home", new { }, new { Class = "btn btn-secondary " })
+        </div>
+    </div>
+    <div class="col-md-10">
 
-<form id="deleteForm" asp-action="Delete"></form>
-<form id="addForm" asp-action="Add" asp-route-amount=1></form>
-<form id="removeForm" asp-action="Add" asp-route-amount=-1></form>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Price)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Amount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Value)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Title)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Amount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Value)
+                        </td>
+                        <td>
+                            @* @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) | *@
+                            @* @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) | *@
+                            @* @Html.ActionLink("Delete", "Delete", new {  id=item.Id }) *@
+                            <button type="submit" form="addForm" value="@item.ProductId" name="id"
+                                class="btn btn-secondary">Add</button>
+                            <button type="submit" form="removeForm" value="@item.ProductId" name="id"
+                                class="btn btn-secondary">Remove</button>
+                            <button type="submit" form="deleteForm" value="@item.Id" name="id"
+                                class="btn btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                }
+                <tr class="bg-secondary">
+                    <th />
+                    <th />
+                    <th>
+                        @Model.Sum(i => i.Amount)
+                    </th>
+                    <th>
+                        @Model.Sum(i => i.Value)
+                    </th>
+                    <th />
+                </tr>
+            </tbody>
+        </table>
 
-
-@Html.ActionLink("Return", "Index", "Home", new { /* id=item.PrimaryKey */ })
+        <form id="deleteForm" asp-action="Delete"></form>
+        <form id="addForm" asp-action="Add" asp-route-amount=1></form>
+        <form id="removeForm" asp-action="Add" asp-route-amount=-1></form>
+    </div>
+</div>
 

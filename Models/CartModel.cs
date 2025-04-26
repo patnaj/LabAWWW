@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -12,18 +13,23 @@ namespace Lab2.Models
         [Key]
         public int Id { get; set; }
         [RegularExpression("[A-Za-z0-9\\-\\.]{1,50}")]
+        [DisplayName("Ulica")]
         public string Streat { get; set; } = "";
 
         [RegularExpression("[0-9]{1,4}[a-zA-Z]{0,4}")]
+        [DisplayName("Nr. Domu")]
         public string HomeNo { get; set; } = "";
         [RegularExpression("[0-9]{2}[0-9]{3}")]
-        public string ZipCode { get; set; }= "";
+        [DisplayName("Kod Pocztowy")]
+        public string ZipCode { get; set; } = "";
         [Phone]
-        public string PhoneNo {get;set;} = "";
+        [DisplayName("Telefon")]
+        public string PhoneNo { get; set; } = "";
         [EmailAddress]
-        public string Email {get;set;} = "";
+        [DisplayName("Email")]
+        public string Email { get; set; } = "";
 
-        public virtual IList<CartItemModel> Products {get;set;} = new List<CartItemModel>();
+        public virtual IList<CartItemModel> Products { get; set; } = new List<CartItemModel>();
     }
 
     public class CartItemModel
@@ -31,11 +37,17 @@ namespace Lab2.Models
         [Key]
         public int Id { get; set; }
         public int ProductId { get; set; }
-        public float Amount { get; set; }
-        public float Value { get=>Product!=null?Product.Price * Amount:0;  }
-        
-
         [ForeignKey("ProductId")]
         public virtual ProductModel Product { get; set; }
+
+
+        [DisplayName("Ilość")]
+        public float Amount { get; set; }
+        [DisplayName("Nazwa")]
+        public string Title { get => Product != null ? Product.Title : ""; }
+        [DisplayName("Cena")]
+        public float Price { get => Product != null ? Product.Price : 0; }
+        [DisplayName("Wartość")]
+        public float Value { get => Product != null ? Product.Price * Amount : 0; }
     }
 }
