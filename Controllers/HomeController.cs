@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.CodeAnalysis;
 using Humanizer;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Lab2.Controllers;
 
@@ -13,9 +15,13 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly ApplicationDbContext db;
+    private readonly RoleManager<IdentityRole> roleManager;
+    public UserManager<IdentityUser> userManager { get; }
 
-    public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
+    public HomeController(ILogger<HomeController> logger, ApplicationDbContext db, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
     {
+        this.userManager = userManager;
+        this.roleManager = roleManager;
         this.db = db;
         _logger = logger;
     }
@@ -40,6 +46,7 @@ public class HomeController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public IActionResult Add(int catid, int id = 0)
     {
 
@@ -47,6 +54,7 @@ public class HomeController : Controller
         return View(prod);
     }
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Add(ProductModel prod)
     {
         if (ModelState.IsValid)
@@ -66,7 +74,7 @@ public class HomeController : Controller
                 tmp.Tags = prod.Tags;
                 //tagi
                 var tags = (prod.Tags ?? "").Split(",", StringSplitOptions.RemoveEmptyEntries).Distinct().ToList();
-                var db_tags = db.Tags.Where(i => tags.Contains(i.Title)).Select(t=>t.Title);
+                var db_tags = db.Tags.Where(i => tags.Contains(i.Title)).Select(t => t.Title);
                 db.Tags.AddRange(tags.Except(db_tags).Select(i => new TagModel() { Title = i }));
             }
             db.SaveChanges();
@@ -77,12 +85,14 @@ public class HomeController : Controller
 
 
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public IActionResult AddCatalog()
     {
         return View(new CatalogModel() { });
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public IActionResult AddCatalog(CatalogModel catalog)
     {
         if (ModelState.IsValid)
@@ -97,11 +107,13 @@ public class HomeController : Controller
 
 
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public IActionResult Edit(int id)
     {
         return View(db.Products.FirstOrDefault(p => p.Id == id));
     }
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public IActionResult Edit(ProductModel prod)
     {
         var p = db.Products.FirstOrDefault(p => p.Id == prod.Id);
@@ -116,12 +128,14 @@ public class HomeController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public IActionResult Delete(int id)
     {
         var p = db.Products.FirstOrDefault(i => i.Id == id);
         return p == null ? RedirectToAction("index") : View(p);
     }
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public IActionResult Delete(int id, bool ok)
     {
         var p = db.Products.FirstOrDefault(i => i.Id == id);
@@ -136,8 +150,29 @@ public class HomeController : Controller
 
 
 
-    public IActionResult Seed()
+    public async Task<IActionResult> Seed()
     {
+        var role = await roleManager.FindByNameAsync("admin");
+        if(role == null){
+            await roleManager.CreateAsync(new IdentityRole("admin"));
+        }
+
+        var user = await userManager.FindByNameAsync("Admin");
+        if(user == null)
+        {
+            user =  new IdentityUser(){
+                UserName = "admin@test.test",
+                NormalizedUserName = "admin@test.test",
+                Email = "admin@test.test",
+                NormalizedEmail = "admin@test.test",
+                EmailConfirmed = true,
+                SecurityStamp = String.Empty
+            };
+            await userManager.CreateAsync(user, "123test##Test");
+            await userManager.AddToRoleAsync(user, "admin");
+        }
+
+
         if (db.Products.FirstOrDefault() == null)
         {
             db.Catalogs.Add(new CatalogModel()

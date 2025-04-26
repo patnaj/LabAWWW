@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace Lab2.Models
 {
@@ -30,6 +31,10 @@ namespace Lab2.Models
         public string Email { get; set; } = "";
 
         public virtual IList<CartItemModel> Products { get; set; } = new List<CartItemModel>();
+
+        public string UserId { get; set; }
+        [ForeignKey("UserId")]
+        public virtual IdentityUser User {get;set;}
     }
 
     public class CartItemModel

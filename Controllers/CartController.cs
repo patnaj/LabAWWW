@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Lab2.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -12,25 +14,35 @@ using Microsoft.Extensions.Logging;
 namespace Lab2.Controllers
 {
     // [Route("[controller]")]
+    [Authorize]
     public class CartController : Controller
     {
         private readonly ILogger<CartController> _logger;
         private Lab2.Data.ApplicationDbContext Db { get; }
-        private CartModel cart = null;
+
+        private CartModel _cart = null;
+        private CartModel cart
+        {
+            get
+            {
+                var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (_cart == null)
+                {
+                    _cart = Db.Carts.Include(a => a.Products).ThenInclude(b => b.Product).FirstOrDefault(i => i.UserId == userid);
+                    if (_cart == null)
+                    {
+                        _cart = new Models.CartModel() { UserId = userid };
+                        Db.Carts.Add(_cart);
+                    }
+                }
+                return _cart;
+            }
+        }
 
         public CartController(ILogger<CartController> logger, Lab2.Data.ApplicationDbContext db)
         {
             this.Db = db;
             _logger = logger;
-
-
-            cart = db.Carts.Include(a => a.Products).ThenInclude(b => b.Product).FirstOrDefault();
-            if (cart == null)
-            {
-                cart = new Models.CartModel();
-                db.Carts.Add(cart);
-            }
-
 
         }
 
