@@ -66,14 +66,14 @@
                         @Html.ActionLink("Usun", "Delete", new { id = m.Id }, new { Class = "btn btn-danger" })
                         @Html.ActionLink("Edytuj", "Add", new { id = m.Id }, new { Class = "btn btn-secondary" })
 
-                        <button form="AddToCart" value="@m.Id" name="id" class="btn btn-success">Dodaj do
+                        <button form="AddToCart" type="submit" value="@m.Id" name="id" class="btn btn-success">Dodaj do
                             koszyka</button>
                     </td>
                 </tr>
             }
         </table>
-        <form id="query" asp-action="Index" asp-controller="Home" asp-route-catid="@ViewBag.catid" method="post" />
-        <form id="AddToCart" asp-action="Add" asp-controller="Cart" method="post" />
+        <form id="query" asp-action="Index" asp-controller="Home" asp-route-catid="@ViewBag.catid" method="post" ></form>
+        <form id="AddToCart" asp-action="Add" asp-controller="Cart" method="post" ></form>
         <div class="col-12">
             @if (ViewBag.Tags is List<TagModel> tags)
             {
