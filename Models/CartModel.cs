@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Lab2.Models
 {
-    public class CartModel
-    {
-        [Key]
-        public int Id { get; set; }
+
+
+
+    public class CartAdressModel{
         [RegularExpression("[A-Za-z0-9\\-\\.]{1,50}")]
         [DisplayName("Ulica")]
         public string Streat { get; set; } = "";
@@ -30,11 +30,21 @@ namespace Lab2.Models
         [DisplayName("Email")]
         public string Email { get; set; } = "";
 
+    }
+
+
+    public class CartModel: CartAdressModel
+    {
+        [Key]
+        public int Id { get; set; }
+
         public virtual IList<CartItemModel> Products { get; set; } = new List<CartItemModel>();
 
         public string UserId { get; set; }
         [ForeignKey("UserId")]
         public virtual IdentityUser User {get;set;}
+    
+        public DateTime? OrderDate { get; set; } = null;
     }
 
     public class CartItemModel

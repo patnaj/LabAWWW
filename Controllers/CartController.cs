@@ -28,7 +28,7 @@ namespace Lab2.Controllers
                 var userid = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (_cart == null)
                 {
-                    _cart = Db.Carts.Include(a => a.Products).ThenInclude(b => b.Product).FirstOrDefault(i => i.UserId == userid);
+                    _cart = Db.Carts.Include(a => a.Products).ThenInclude(b => b.Product).FirstOrDefault(i => i.UserId == userid && i.OrderDate == null);
                     if (_cart == null)
                     {
                         _cart = new Models.CartModel() { UserId = userid };
@@ -58,23 +58,26 @@ namespace Lab2.Controllers
         }
 
         [HttpPost]
-        public IActionResult Address(CartModel cart)
+        
+        public IActionResult Address(CartAdressModel cart)
         {
             if (ModelState.IsValid)
             {
 
-                foreach (var p in this.cart.GetType().GetProperties())
+                foreach (var p in cart.GetType().GetProperties())
                 {
-                    if (p.GetAccessors().FirstOrDefault()?.IsVirtual == false && !Attribute.IsDefined(p, typeof(KeyAttribute)))
+                    if (p.GetAccessors().FirstOrDefault()?.IsVirtual == false && !Attribute.IsDefined(p, typeof(KeyAttribute))){                        
                         p.SetValue(this.cart, p.GetValue(cart));
+                    }
                 }
-                return RedirectToAction("Index", "Home");
+                Db.SaveChanges();
+                return RedirectToAction("Order");
             }
             return View(cart);
         }
 
         [HttpGet]
-        public IActionResult Order(CartModel cart)
+        public IActionResult Order()
         {
             return View(cart);
         }
@@ -82,7 +85,9 @@ namespace Lab2.Controllers
         [HttpPost]
         public IActionResult Order(bool ok)
         {
-            Db.Carts.Remove(this.cart);
+            cart.OrderDate = DateTime.Now;
+            Db.SaveChanges();
+            // Db.Carts.Remove(this.cart);
             return RedirectToAction("Index", "Home");
         }
 
